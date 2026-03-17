@@ -8,6 +8,8 @@ import MainLayout from "../Layout/MainLayout";
 import Dashboard from "../features/dashboard/Dashboard";
 import Notifications from "../features/notifications/Notifications";
 import Buildings from "../features/buildings/Buildings";
+import Profile_and_Setting from "../features/Profile_and_Setting/Profile_and_Setting";
+import Team_messaging from "../features/Team_messaging/Team_messaging";
 import BuildingFlatsList from "../features/buildings/BuildingFlatsList";
 import BuildingFlatDetails from "../features/buildings/BuildingFlatDetails";
 import BuildingFlatDetailsEdit from "../features/buildings/BuildingFlatDetailsEdit";
@@ -41,6 +43,13 @@ const router = createBrowserRouter([
                 element: <Buildings />,
             },
             {
+                path: "profile-settings",
+                element: <Profile_and_Setting />,
+            },
+            {
+                path: "/team-messaging",
+                element: <Team_messaging />,
+            }
                 path: "buildings/:buildingId",
                 element: <BuildingFlatsList />,
             },

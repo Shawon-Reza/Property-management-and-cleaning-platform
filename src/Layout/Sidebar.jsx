@@ -22,6 +22,8 @@ const navItems = [
   {
     label: "User Management",
     icon: FiUser,
+    hasChevron: true,
+    to: "/user-management",
     children: [
       { label: "Mini Admin", to: "/user-management/mini-admin" },
       { label: "Cleaners", to: "/user-management/cleaners" },
@@ -36,6 +38,7 @@ const navItems = [
   { label: "Team Messaging", icon: FiMessageSquare, to: "/team-messaging" },
 ];
 
+const Sidebar = ({ onNavigate = () => {} }) => {
 const Sidebar = ({ onNavigate = () => { } }) => {
   const location = useLocation();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(
@@ -111,15 +114,17 @@ const Sidebar = ({ onNavigate = () => { } }) => {
                     to={item.to}
                     onClick={onNavigate}
                     className={({ isActive }) =>
+                      `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-lg font-medium transition ${
+                        isActive
+                          ? "bg-blue-50 text-blue-600"
+                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
                       `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-lg font-medium transition ${isActive
                         ? "text-white bg-blue-500"
                         : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
                       }`
                     }
                   >
-                    <Icon
-                      className={`shrink-0 text-[21px]`}
-                    />
+                    <Icon className={`shrink-0 text-[21px]`} />
                     <span>{item.label}</span>
 
                   </NavLink>
@@ -130,16 +135,22 @@ const Sidebar = ({ onNavigate = () => { } }) => {
         </nav>
 
         <div className="mt-auto space-y-2">
-          <button
-            type="button"
-            className="cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-lg font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-800"
+          <NavLink
+            to="/profile-settings"
+            className={({ isActive }) =>
+              `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-lg font-medium transition ${
+                isActive
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
+              }`
+            }
           >
             <div className="relative">
-              <FiUser className="text-[21px] text-slate-500" />
-              <FiSettings className="absolute -bottom-1 -right-1 rounded-full bg-slate-50 text-[12px] text-slate-500" />
+              <FiUser className="text-[21px]" />
+              <FiSettings className="absolute -bottom-1 -right-1 rounded-full bg-slate-50 text-[12px]" />
             </div>
             <span>Profile &amp; Settings</span>
-          </button>
+          </NavLink>
 
           <button
             type="button"
