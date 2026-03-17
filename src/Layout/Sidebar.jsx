@@ -38,7 +38,6 @@ const navItems = [
   { label: "Team Messaging", icon: FiMessageSquare, to: "/team-messaging" },
 ];
 
-const Sidebar = ({ onNavigate = () => {} }) => {
 const Sidebar = ({ onNavigate = () => { } }) => {
   const location = useLocation();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(
@@ -91,10 +90,9 @@ const Sidebar = ({ onNavigate = () => { } }) => {
                               to={child.to}
                               onClick={onNavigate}
                               className={({ isActive }) =>
-                                `block w-full rounded-md px-2 py-1.5 text-left text-lg font-medium transition ${
-                                  isActive
-                                    ? "text-white bg-blue-500"
-                                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
+                                `block w-full rounded-md px-2 py-1.5 text-left text-lg font-medium transition ${isActive
+                                  ? "text-white bg-blue-500"
+                                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
                                 }`
                               }
                             >
@@ -114,10 +112,6 @@ const Sidebar = ({ onNavigate = () => { } }) => {
                     to={item.to}
                     onClick={onNavigate}
                     className={({ isActive }) =>
-                      `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-lg font-medium transition ${
-                        isActive
-                          ? "bg-blue-50 text-blue-600"
-                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
                       `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-lg font-medium transition ${isActive
                         ? "text-white bg-blue-500"
                         : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
@@ -126,7 +120,6 @@ const Sidebar = ({ onNavigate = () => { } }) => {
                   >
                     <Icon className={`shrink-0 text-[21px]`} />
                     <span>{item.label}</span>
-
                   </NavLink>
                 </li>
               );
@@ -138,10 +131,9 @@ const Sidebar = ({ onNavigate = () => { } }) => {
           <NavLink
             to="/profile-settings"
             className={({ isActive }) =>
-              `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-lg font-medium transition ${
-                isActive
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
+              `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-lg font-medium transition ${isActive
+                ? "bg-blue-50 text-blue-600"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
               }`
             }
           >

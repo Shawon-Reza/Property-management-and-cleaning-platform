@@ -49,9 +49,9 @@ const router = createBrowserRouter([
             {
                 path: "/team-messaging",
                 element: <Team_messaging />,
-            }
+            }, {
                 path: "buildings/:buildingId",
-                element: <BuildingFlatsList />,
+                element: <BuildingFlatsList />
             },
             {
                 path: "buildings/:buildingId/flats/:flatId",
