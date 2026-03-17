@@ -17,6 +17,7 @@ import MiniAdmin from "../features/userManagement/MiniAdmin";
 import Cleaners from "../features/userManagement/Cleaners";
 import MaintenanceWorker from "../features/userManagement/MaintenanceWorker";
 import Schedule from "../features/schedule/Schedule";
+import Reports from "../features/reports/Reports";
 
 
 const router = createBrowserRouter([
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
             {
                 path: "user-management/maintenance-worker",
                 element: <MaintenanceWorker />,
+            },
+            {
+                path: "reports",
+                element: <Reports />,
             },
         ]
     },
