@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FiImage, FiX } from "react-icons/fi";
 
-const AREAS = ["Bradford", "Halifax", "Leeds"];
 const EMPTY_FORM = {
   fullName: "",
   personalEmail: "",
@@ -10,13 +9,18 @@ const EMPTY_FORM = {
   fullAddress: "",
   loginEmail: "",
   initialPassword: "",
-  area: "",
 };
 
-const AddMiniAdminModal = ({ isOpen, onClose, onSubmit, mode = "add", initialData = null }) => {
+const AddCleanerModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  mode = "add",
+  initialData = null,
+  entityLabel = "Cleaner",
+}) => {
   const inputRef = useRef(null);
   const [photo, setPhoto] = useState(null);
-  const [photoError, setPhotoError] = useState("");
   const [form, setForm] = useState(EMPTY_FORM);
   const isViewMode = mode === "view";
   const isEditMode = mode === "edit";
@@ -27,17 +31,15 @@ const AddMiniAdminModal = ({ isOpen, onClose, onSubmit, mode = "add", initialDat
     }
 
     setForm({
-      fullName: initialData?.name || "",
+      fullName: initialData?.memberName || "",
       personalEmail: initialData?.email || "",
-      city: initialData?.city || "",
+      city: initialData?.location || "",
       state: initialData?.state || "",
       fullAddress: initialData?.fullAddress || "",
       loginEmail: initialData?.loginEmail || initialData?.email || "",
       initialPassword: initialData?.initialPassword || "",
-      area: initialData?.area || "",
     });
     setPhoto(null);
-    setPhotoError("");
   }, [initialData, isOpen]);
 
   useEffect(() => {
@@ -73,16 +75,10 @@ const AddMiniAdminModal = ({ isOpen, onClose, onSubmit, mode = "add", initialDat
         preview: URL.createObjectURL(file),
       };
     });
-    setPhotoError("");
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    if (!photo && !initialData?.photo && mode === "add") {
-      setPhotoError("Photo is required.");
-      return;
-    }
 
     onSubmit({
       mode,
@@ -99,11 +95,13 @@ const AddMiniAdminModal = ({ isOpen, onClose, onSubmit, mode = "add", initialDat
   };
 
   const modalTitle = isViewMode
-    ? "View Mini Admin"
+    ? `View ${entityLabel}`
     : isEditMode
-      ? "Edit Mini Admin"
-      : "Add New Mini Admin";
-  const submitLabel = isEditMode ? "Update Admin" : "Add Admin";
+      ? `Edit ${entityLabel}`
+      : `Add New ${entityLabel}`;
+
+  const actionLabel = entityLabel === "Maintenance Worker" ? "Worker" : entityLabel;
+  const submitLabel = isEditMode ? `Update ${actionLabel}` : `Add ${actionLabel}`;
   const previewSrc = photo?.preview || initialData?.photoPreview || initialData?.photo || null;
 
   return (
@@ -152,13 +150,11 @@ const AddMiniAdminModal = ({ isOpen, onClose, onSubmit, mode = "add", initialDat
             className={`mx-auto flex h-32 w-44 items-center justify-center overflow-hidden rounded-lg border border-dashed bg-blue-50/40 text-blue-500 transition ${
               isViewMode
                 ? "cursor-default border-slate-200"
-                : photoError
-                  ? "border-red-300 hover:bg-blue-50"
-                  : "border-blue-300 hover:bg-blue-50"
+                : "border-blue-300 hover:bg-blue-50"
             }`}
           >
             {previewSrc ? (
-              <img src={previewSrc} alt="Mini admin" className="h-full w-full object-cover" />
+              <img src={previewSrc} alt={entityLabel} className="h-full w-full object-cover" />
             ) : (
               <span className="text-center text-sm font-semibold leading-tight">
                 <FiImage className="mx-auto mb-2 text-4xl" />
@@ -167,53 +163,99 @@ const AddMiniAdminModal = ({ isOpen, onClose, onSubmit, mode = "add", initialDat
             )}
           </button>
 
-          {photoError ? (
-            <p className="text-center text-xs font-medium text-red-500">{photoError}</p>
-          ) : null}
-
           <section className="space-y-2">
             <h3 className="text-sm font-semibold text-slate-700">Personal Information</h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <input type="text" required value={form.fullName} onChange={updateField("fullName")} placeholder="Full Name*" disabled={isViewMode} className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500" />
-              <input type="email" required value={form.personalEmail} onChange={updateField("personalEmail")} placeholder="Email*" disabled={isViewMode} className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500" />
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-500">Full Name*</label>
+                <input
+                  type="text"
+                  value={form.fullName}
+                  onChange={updateField("fullName")}
+                  placeholder="e.g., Sarah khan"
+                  disabled={isViewMode}
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-500">Email*</label>
+                <input
+                  type="email"
+                  value={form.personalEmail}
+                  onChange={updateField("personalEmail")}
+                  placeholder="e.g., sarah.khan@email.com"
+                  disabled={isViewMode}
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
+                />
+              </div>
             </div>
           </section>
 
           <section className="space-y-2">
             <h3 className="text-sm font-semibold text-slate-700">Address Information</h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <input type="text" required value={form.city} onChange={updateField("city")} placeholder="City" disabled={isViewMode} className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500" />
-              <input type="text" required value={form.state} onChange={updateField("state")} placeholder="State/Province" disabled={isViewMode} className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500" />
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-500">City</label>
+                <input
+                  type="text"
+                  value={form.city}
+                  onChange={updateField("city")}
+                  placeholder="e.g., London"
+                  disabled={isViewMode}
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-500">State/Province</label>
+                <input
+                  type="text"
+                  value={form.state}
+                  onChange={updateField("state")}
+                  placeholder="e.g., north"
+                  disabled={isViewMode}
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
+                />
+              </div>
             </div>
-            <textarea required value={form.fullAddress} onChange={updateField("fullAddress")} rows={3} placeholder="Full Address" disabled={isViewMode} className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500" />
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-500">Full Address</label>
+              <textarea
+                rows={3}
+                value={form.fullAddress}
+                onChange={updateField("fullAddress")}
+                placeholder="e.g., London"
+                disabled={isViewMode}
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
+              />
+            </div>
           </section>
 
           <section className="space-y-2">
             <h3 className="text-sm font-semibold text-slate-700">User Log In Information</h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <input type="email" required value={form.loginEmail} onChange={updateField("loginEmail")} placeholder="Email" disabled={isViewMode} className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500" />
-              <input type={isViewMode ? "text" : "password"} required value={form.initialPassword} onChange={updateField("initialPassword")} placeholder="Initial Password" disabled={isViewMode} className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500" />
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-500">Enter Email/Phone Number</label>
+                <input
+                  type="text"
+                  value={form.loginEmail}
+                  onChange={updateField("loginEmail")}
+                  placeholder="e.g., sarah.khan@email.com"
+                  disabled={isViewMode}
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-500">Initial Password</label>
+                <input
+                  type={isViewMode ? "text" : "password"}
+                  value={form.initialPassword}
+                  onChange={updateField("initialPassword")}
+                  placeholder="****"
+                  disabled={isViewMode}
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
+                />
+              </div>
             </div>
-          </section>
-
-          <section className="space-y-2">
-            <h3 className="text-sm font-semibold text-slate-700">Assign Area</h3>
-            <select
-              required
-              value={form.area}
-              onChange={updateField("area")}
-              disabled={isViewMode}
-              className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
-            >
-              <option value="" disabled>
-                Select one location
-              </option>
-              {AREAS.map((area) => (
-                <option key={area} value={area}>
-                  {area}
-                </option>
-              ))}
-            </select>
           </section>
 
           <div className="grid grid-cols-1 gap-2 pt-1 sm:grid-cols-2">
@@ -224,6 +266,7 @@ const AddMiniAdminModal = ({ isOpen, onClose, onSubmit, mode = "add", initialDat
             >
               {isViewMode ? "Close" : "Cancel"}
             </button>
+
             {isViewMode ? (
               <button
                 type="button"
@@ -247,4 +290,4 @@ const AddMiniAdminModal = ({ isOpen, onClose, onSubmit, mode = "add", initialDat
   );
 };
 
-export default AddMiniAdminModal;
+export default AddCleanerModal;

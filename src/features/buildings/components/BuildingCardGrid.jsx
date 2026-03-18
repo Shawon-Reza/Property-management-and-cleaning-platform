@@ -5,7 +5,9 @@ import {
     FiMapPin,
     FiTrash2,
 } from "react-icons/fi";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import AddBuildingModal from "./AddBuildingModal";
 
 const buildings = Array.from({ length: 9 }, (_, index) => ({
     id: index + 1,
@@ -17,7 +19,7 @@ const buildings = Array.from({ length: 9 }, (_, index) => ({
         "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=240&q=80",
 }));
 
-const BuildingCard = ({ building }) => {
+const BuildingCard = ({ building, onEdit }) => {
     const navigate = useNavigate();
 
     return (
@@ -36,7 +38,7 @@ const BuildingCard = ({ building }) => {
                         <button
                             type="button"
                             aria-label="Delete building"
-                            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-red-50 text-red-400 transition hover:bg-red-100 hover:text-red-500"
+                            className="cursor-pointer inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-red-50 text-red-400 transition hover:bg-red-100 hover:text-red-500"
                         >
                             <FiTrash2 className="text-sm" />
                         </button>
@@ -58,7 +60,8 @@ const BuildingCard = ({ building }) => {
             <div className="grid grid-cols-2 gap-2">
                 <button
                     type="button"
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200"
+                    onClick={() => onEdit(building)}
+                    className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200"
                 >
                     <FiEdit2 className="text-xs" />
                     Edit
@@ -67,7 +70,7 @@ const BuildingCard = ({ building }) => {
                 <button
                     type="button"
                     onClick={() => navigate(`/buildings/${building.id}`)}
-                    className="inline-flex items-center justify-center gap-1 rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-600"
+                    className="cursor-pointer inline-flex items-center justify-center gap-1 rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-600"
                 >
                     Open
                     <FiChevronRight className="text-xs" />
@@ -78,12 +81,27 @@ const BuildingCard = ({ building }) => {
 };
 
 const BuildingCardGrid = () => {
+    const [editingBuilding, setEditingBuilding] = useState(null);
+
     return (
-        <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {buildings.map((building) => (
-                <BuildingCard key={building.id} building={building} />
-            ))}
-        </section>
+        <>
+            <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {buildings.map((building) => (
+                    <BuildingCard
+                        key={building.id}
+                        building={building}
+                        onEdit={setEditingBuilding}
+                    />
+                ))}
+            </section>
+
+            <AddBuildingModal
+                isOpen={Boolean(editingBuilding)}
+                onClose={() => setEditingBuilding(null)}
+                mode="edit"
+                initialData={editingBuilding}
+            />
+        </>
     );
 };
 

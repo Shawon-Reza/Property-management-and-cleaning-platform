@@ -1,6 +1,8 @@
 import { FiChevronRight, FiEdit2, FiMenu, FiTrash2, FiUsers } from "react-icons/fi";
+import { useState } from "react";
 import { LuBed } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router";
+import AddPropertyModal from "./AddPropertyModal";
 
 const DEFAULT_FLATS = Array.from({ length: 10 }, (_, index) => ({
   id: index + 1,
@@ -9,7 +11,7 @@ const DEFAULT_FLATS = Array.from({ length: 10 }, (_, index) => ({
   people: "5 People",
 }));
 
-const FlatRow = ({ flat, buildingId }) => {
+const FlatRow = ({ flat, buildingId, onEdit }) => {
   const navigate = useNavigate();
 
   return (
@@ -34,7 +36,8 @@ const FlatRow = ({ flat, buildingId }) => {
         <button
           type="button"
           aria-label="Edit flat"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+          onClick={() => onEdit(flat)}
+          className="cursor-pointer inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
         >
           <FiEdit2 className="text-sm" />
         </button>
@@ -42,7 +45,7 @@ const FlatRow = ({ flat, buildingId }) => {
         <button
           type="button"
           aria-label="Delete flat"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-red-50 text-red-400 transition hover:bg-red-100 hover:text-red-500"
+          className="cursor-pointer inline-flex h-8 w-8 items-center justify-center rounded-md bg-red-50 text-red-400 transition hover:bg-red-100 hover:text-red-500"
         >
           <FiTrash2 className="text-sm" />
         </button>
@@ -50,7 +53,7 @@ const FlatRow = ({ flat, buildingId }) => {
         <button
           type="button"
           onClick={() => navigate(`/buildings/${buildingId}/flats/${flat.id}`)}
-          className="inline-flex items-center gap-1 rounded-lg bg-blue-500 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-blue-600"
+          className="cursor-pointer inline-flex items-center gap-1 rounded-lg bg-blue-500 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-blue-600"
         >
           Open
           <FiChevronRight className="text-xs" />
@@ -62,13 +65,28 @@ const FlatRow = ({ flat, buildingId }) => {
 
 const FlatsTable = ({ flats: flatList = DEFAULT_FLATS }) => {
   const { buildingId } = useParams();
+  const [editingFlat, setEditingFlat] = useState(null);
 
   return (
-    <section className="space-y-3">
-      {flatList.map((flat) => (
-        <FlatRow key={flat.id} flat={flat} buildingId={buildingId} />
-      ))}
-    </section>
+    <>
+      <section className="space-y-3">
+        {flatList.map((flat) => (
+          <FlatRow
+            key={flat.id}
+            flat={flat}
+            buildingId={buildingId}
+            onEdit={setEditingFlat}
+          />
+        ))}
+      </section>
+
+      <AddPropertyModal
+        isOpen={Boolean(editingFlat)}
+        onClose={() => setEditingFlat(null)}
+        mode="edit"
+        initialData={editingFlat}
+      />
+    </>
   );
 };
 

@@ -20,6 +20,7 @@ import Cleaners from "../features/userManagement/Cleaners";
 import MaintenanceWorker from "../features/userManagement/MaintenanceWorker";
 import Schedule from "../features/schedule/Schedule";
 import Reports from "../features/reports/Reports";
+import Weekly_Wages from "../features/weekly_Wages/Weekly_Wages";
 
 
 const router = createBrowserRouter([
@@ -89,6 +90,10 @@ const router = createBrowserRouter([
             {
                 path: "reports",
                 element: <Reports />,
+            },
+            {
+                path: "weekly-wages",
+                element: <Weekly_Wages />,
             },
         ]
     },

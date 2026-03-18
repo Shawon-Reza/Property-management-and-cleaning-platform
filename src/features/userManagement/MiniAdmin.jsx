@@ -14,7 +14,11 @@ const MOCK_MINI_ADMINS = Array.from({ length: 13 }, (_, index) => ({
 
 const MiniAdmin = () => {
 	const [search, setSearch] = useState("");
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [modalState, setModalState] = useState({
+		isOpen: false,
+		mode: "add",
+		admin: null,
+	});
 
 	const filteredAdmins = useMemo(() => {
 		const query = search.toLowerCase().trim();
@@ -30,22 +34,45 @@ const MiniAdmin = () => {
 		);
 	}, [search]);
 
+	const handleCloseModal = () => {
+		setModalState({
+			isOpen: false,
+			mode: "add",
+			admin: null,
+		});
+	};
+
+	const handleAdminAction = (action, admin) => {
+		if (action === "Delete") {
+			console.log("Delete mini admin", admin);
+			return;
+		}
+
+		setModalState({
+			isOpen: true,
+			mode: action.toLowerCase(),
+			admin,
+		});
+	};
+
 	return (
 		<main className="min-h-screen bg-slate-100 p-3 sm:p-5 lg:p-6">
 			<MiniAdminHeader
 				search={search}
 				onSearch={setSearch}
-				onCreate={() => setIsModalOpen(true)}
+				onCreate={() => setModalState({ isOpen: true, mode: "add", admin: null })}
 			/>
 
-			<MiniAdminTable admins={filteredAdmins} />
+			<MiniAdminTable admins={filteredAdmins} onActionSelect={handleAdminAction} />
 
 			<AddMiniAdminModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
+				isOpen={modalState.isOpen}
+				onClose={handleCloseModal}
+				mode={modalState.mode}
+				initialData={modalState.admin}
 				onSubmit={(payload) => {
 					console.log(payload);
-					setIsModalOpen(false);
+					handleCloseModal();
 				}}
 			/>
 		</main>

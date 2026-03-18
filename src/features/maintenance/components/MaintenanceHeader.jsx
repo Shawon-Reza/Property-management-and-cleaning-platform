@@ -23,7 +23,7 @@ const MaintenanceHeader = ({ activeTab, onTabChange, search, onSearch }) => (
             key={tab}
             type="button"
             onClick={() => onTabChange(tab)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${
+            className={` cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${
               activeTab === tab
                 ? "bg-blue-500 text-white"
                 : "text-slate-600 hover:bg-slate-200"

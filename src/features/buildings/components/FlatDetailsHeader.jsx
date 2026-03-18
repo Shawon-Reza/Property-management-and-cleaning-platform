@@ -28,7 +28,7 @@ const FlatDetailsHeader = ({ flatName, buildingName, city }) => {
       <button
         type="button"
         onClick={() => navigate(`/buildings/${buildingId}/flats/${flatId}/edit`)}
-        className="inline-flex items-center gap-2 rounded-lg border border-blue-500 px-4 py-2 text-sm font-semibold text-blue-500 transition hover:bg-blue-50"
+        className=" cursor-pointer inline-flex items-center gap-2 rounded-lg border border-blue-500 px-4 py-2 text-sm font-semibold text-blue-500 transition hover:bg-blue-50"
       >
         <FiEdit2 className="text-sm" />
         Edit Details

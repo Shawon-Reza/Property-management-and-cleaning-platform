@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { FiImage, FiX } from "react-icons/fi";
 
-const AddBuildingModal = ({ isOpen, onClose }) => {
+const EMPTY_FORM = {
+  buildingName: "",
+  city: "",
+  address: "",
+};
+
+const AddBuildingModal = ({ isOpen, onClose, mode = "add", initialData = null }) => {
   const inputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [form, setForm] = useState({
-    buildingName: "",
-    city: "",
-    address: "",
-  });
+  const [form, setForm] = useState(EMPTY_FORM);
+
+  const isEditMode = mode === "edit";
 
   useEffect(() => {
     return () => {
@@ -17,6 +21,20 @@ const AddBuildingModal = ({ isOpen, onClose }) => {
       }
     };
   }, [selectedImage]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    setForm({
+      buildingName: initialData?.name || "",
+      city: initialData?.city || "",
+      address: initialData?.address || "",
+    });
+
+    setSelectedImage(null);
+  }, [isOpen, initialData]);
 
   if (!isOpen) {
     return null;
@@ -52,6 +70,8 @@ const AddBuildingModal = ({ isOpen, onClose }) => {
     event.preventDefault();
 
     console.log({
+      mode,
+      id: initialData?.id || null,
       ...form,
       image: selectedImage
         ? {
@@ -59,11 +79,13 @@ const AddBuildingModal = ({ isOpen, onClose }) => {
             size: selectedImage.file.size,
             type: selectedImage.file.type,
           }
-        : null,
+        : initialData?.image || null,
     });
 
     onClose();
   };
+
+  const previewImageSrc = selectedImage?.preview || initialData?.image || null;
 
   return (
     <div
@@ -76,10 +98,12 @@ const AddBuildingModal = ({ isOpen, onClose }) => {
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="Add New Building"
+        aria-label={isEditMode ? "Edit Building" : "Add New Building"}
       >
         <div className="mb-6 flex items-start justify-between">
-          <h2 className="text-xl font-bold text-slate-800">Add New Building</h2>
+          <h2 className="text-xl font-bold text-slate-800">
+            {isEditMode ? "Edit Building" : "Add New Building"}
+          </h2>
           <button
             type="button"
             onClick={onClose}
@@ -104,9 +128,9 @@ const AddBuildingModal = ({ isOpen, onClose }) => {
             onClick={() => inputRef.current?.click()}
             className="mx-auto flex h-32 w-44 overflow-hidden rounded-lg border border-dashed border-blue-300 bg-blue-50/40 text-blue-500 transition hover:bg-blue-50"
           >
-            {selectedImage ? (
+            {previewImageSrc ? (
               <img
-                src={selectedImage.preview}
+                src={previewImageSrc}
                 alt="Selected building"
                 className="h-full w-full object-cover"
               />
@@ -122,9 +146,9 @@ const AddBuildingModal = ({ isOpen, onClose }) => {
             )}
           </button>
 
-          {selectedImage ? (
+          {previewImageSrc ? (
             <p className="text-center text-xs font-medium text-slate-500">
-              {selectedImage.file.name}
+              {selectedImage ? selectedImage.file.name : "Current building image"}
             </p>
           ) : null}
 
@@ -180,7 +204,7 @@ const AddBuildingModal = ({ isOpen, onClose }) => {
               type="submit"
               className="rounded-md bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-600"
             >
-              Add
+              {isEditMode ? "Update" : "Add"}
             </button>
           </div>
         </form>

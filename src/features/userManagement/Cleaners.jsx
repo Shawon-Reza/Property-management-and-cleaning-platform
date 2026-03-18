@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import MiniAdminHeader from "./components/MiniAdminHeader";
+import AddCleanerModal from "./components/AddCleanerModal";
 import CleanersTable from "./components/CleanersTable";
 
 const MOCK_CLEANERS = Array.from({ length: 13 }, (_, index) => ({
@@ -14,6 +15,11 @@ const MOCK_CLEANERS = Array.from({ length: 13 }, (_, index) => ({
 
 const Cleaners = () => {
   const [search, setSearch] = useState("");
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    mode: "add",
+    cleaner: null,
+  });
 
   const filteredCleaners = useMemo(() => {
     const query = search.toLowerCase().trim();
@@ -33,18 +39,60 @@ const Cleaners = () => {
     );
   }, [search]);
 
+  const handleCloseModal = () => {
+    setModalState({
+      isOpen: false,
+      mode: "add",
+      cleaner: null,
+    });
+  };
+
+  const handleOpenAddModal = () => {
+    setModalState({
+      isOpen: true,
+      mode: "add",
+      cleaner: null,
+    });
+  };
+
+  const handleCleanerAction = (action, cleaner) => {
+    if (action === "Delete") {
+      console.log("Delete cleaner", cleaner);
+      return;
+    }
+
+    setModalState({
+      isOpen: true,
+      mode: action.toLowerCase(),
+      cleaner,
+    });
+  };
+
+  const handleSubmitCleaner = (payload) => {
+    console.log("Cleaner modal submit", payload);
+    handleCloseModal();
+  };
+
   return (
     <main className="min-h-screen bg-slate-100 p-3 sm:p-5 lg:p-6">
       <MiniAdminHeader
         search={search}
         onSearch={setSearch}
-        onCreate={() => console.log("Add cleaner")}
+        onCreate={handleOpenAddModal}
         subtitle="Manage your cleaners & staff"
         listTitle="All Cleaners list"
         buttonLabel="Add Cleaner"
       />
 
-      <CleanersTable cleaners={filteredCleaners} />
+      <CleanersTable cleaners={filteredCleaners} onActionSelect={handleCleanerAction} />
+
+      <AddCleanerModal
+        isOpen={modalState.isOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitCleaner}
+        mode={modalState.mode}
+        initialData={modalState.cleaner}
+      />
     </main>
   );
 };
