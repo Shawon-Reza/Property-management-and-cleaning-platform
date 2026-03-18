@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { HiArrowDownTray } from "react-icons/hi2";
+import ReportDetailsModal from "./components/ReportDetailsModal";
 import ReportsStats from "./components/ReportsStats";
 import ReportsFilters from "./components/ReportsFilters";
 import ReportsTable from "./components/ReportsTable";
@@ -75,12 +76,17 @@ const REPORTS_DATA = [
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("Cleaning Completion");
+  const [selectedReport, setSelectedReport] = useState(null);
   const [filters, setFilters] = useState({
     city: "",
     building: "",
     flat: "",
     dateTime: "",
   });
+
+  useEffect(() => {
+    setSelectedReport(null);
+  }, [activeTab]);
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -133,8 +139,15 @@ const Reports = () => {
           filters={filters}
           onFilterChange={handleFilterChange}
         />
-        <ReportsTable rows={filteredRows} />
+        <ReportsTable rows={filteredRows} onOpenReport={setSelectedReport} />
       </div>
+
+      <ReportDetailsModal
+        isOpen={Boolean(selectedReport)}
+        onClose={() => setSelectedReport(null)}
+        activeTab={activeTab}
+        row={selectedReport}
+      />
     </div>
   );
 };

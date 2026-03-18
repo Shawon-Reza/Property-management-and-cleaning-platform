@@ -1,6 +1,6 @@
 import { HiClock, HiUser } from "react-icons/hi2";
 
-const TableRow = ({ row }) => (
+const TableRow = ({ row, onOpen }) => (
   <tr className="border-b border-slate-100 hover:bg-slate-50">
     <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700">
       <span className="flex items-center gap-1.5">
@@ -18,21 +18,29 @@ const TableRow = ({ row }) => (
     </td>
     <td className="px-4 py-3 text-sm text-slate-700">{row.task}</td>
     <td className="px-4 py-3">
-      <button className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-1 text-sm font-medium text-blue-600 hover:bg-blue-100 transition-colors">
+      <button
+        type="button"
+        onClick={() => onOpen(row)}
+        className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-1 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-100"
+      >
         Open
       </button>
     </td>
   </tr>
 );
 
-const MobileCard = ({ row }) => (
+const MobileCard = ({ row, onOpen }) => (
   <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-2">
     <div className="flex items-center justify-between gap-2">
       <span className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
         <HiClock className="shrink-0 text-slate-400" />
         {row.dateTime}
       </span>
-      <button className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 hover:bg-blue-100 transition-colors">
+      <button
+        type="button"
+        onClick={() => onOpen(row)}
+        className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100"
+      >
         Open
       </button>
     </div>
@@ -52,7 +60,7 @@ const MobileCard = ({ row }) => (
   </div>
 );
 
-const ReportsTable = ({ rows }) => {
+const ReportsTable = ({ rows, onOpenReport }) => {
   return (
     <>
       {/* Desktop table */}
@@ -69,7 +77,7 @@ const ReportsTable = ({ rows }) => {
           </thead>
           <tbody>
             {rows.length > 0 ? (
-              rows.map((row) => <TableRow key={row.id} row={row} />)
+              rows.map((row) => <TableRow key={row.id} row={row} onOpen={onOpenReport} />)
             ) : (
               <tr>
                 <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-500">
@@ -84,7 +92,7 @@ const ReportsTable = ({ rows }) => {
       {/* Mobile cards */}
       <div className="space-y-3 md:hidden">
         {rows.length > 0 ? (
-          rows.map((row) => <MobileCard key={row.id} row={row} />)
+          rows.map((row) => <MobileCard key={row.id} row={row} onOpen={onOpenReport} />)
         ) : (
           <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500 shadow-sm">
             No reports found for this tab and filter.
