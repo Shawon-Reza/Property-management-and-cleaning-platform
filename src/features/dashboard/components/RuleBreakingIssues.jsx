@@ -23,12 +23,7 @@ const RuleBreakingIssues = () => {
               <p className="text-sm font-semibold text-slate-800">{issue.title}</p>
               <p className="mt-0.5 text-xs text-slate-400">{issue.location}</p>
             </div>
-            <button
-              type="button"
-              className="shrink-0 rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-blue-600 active:scale-[0.98]"
-            >
-              View
-            </button>
+            
           </li>
         ))}
       </ul>
